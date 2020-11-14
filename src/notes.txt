@@ -1,0 +1,23 @@
+
+
+
+
+each control with modes of its own
+
+
+designer 
+canvas control
+drag and drop
+mode = edit
+
+
+populate
+canvas
+feed it a template
+set a mode
+
+
+text only
+feed it a template
+canvas
+
