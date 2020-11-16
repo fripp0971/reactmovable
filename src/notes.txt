@@ -1,23 +1,40 @@
+components
+
+panel editor
+    edits selected target
+    events for remove and typing with debounce
+
+controls adder
+    uses controls themselves
+    events for adding
+
+input controls themselves
+    controls with mode for each stage
+    have modes
+
+
+step 2 - design 
+    drag drop
+    canvas
+    control panel
+    edit panel
+    builds template to pass to canvas
+
+
+other steps
+    canvas component
+    used for populate mode and text mode
+    accepts template, image url and mode
+    responsible for turning template into a list of controls in their mode
+
+
+
+todo
+add props types to all
 
 
 
 
-each control with modes of its own
 
 
-designer 
-canvas control
-drag and drop
-mode = edit
-
-
-populate
-canvas
-feed it a template
-set a mode
-
-
-text only
-feed it a template
-canvas
 

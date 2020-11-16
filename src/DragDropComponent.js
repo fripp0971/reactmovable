@@ -9,8 +9,6 @@ const DragDropComponent = (props) => {
 
   useEffect(() => {}, []);
 
-  if (props.mode !== "design") return null;
-
   return (
     <Fragment>
       <Moveable
@@ -18,7 +16,7 @@ const DragDropComponent = (props) => {
         target={props.target}
         origin={false}
         renderDirections={["n", "w", "e", "s"]}
-        elementGuidelines={props.addedInputs}
+        elementGuidelines={props.selectableInputs}
         bounds={props.docImageDimensions}
         edge
         draggable
@@ -41,7 +39,7 @@ const DragDropComponent = (props) => {
         }}
         onDragEnd={(e) => {
           const target = e.target;
-          // props.setPositionAttributes(target);
+          props.setPositionAttributes(target);
         }}
         keepRatio={false}
         resizable
@@ -82,7 +80,7 @@ const DragDropComponent = (props) => {
       />
       <Selecto
         dragContainer={props.dragContainer}
-        selectableTargets={props.addedInputs}
+        selectableTargets={props.selectableInputs}
         selectByClick
         selectFromInside={false}
         onSelect={(e) => {}}

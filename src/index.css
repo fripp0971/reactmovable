@@ -1,8 +1,5 @@
 .input-field {
   border-radius: 0px;
-  width: 250px;
-  height: 25px;
-  margin: 5px;
   background: #eee;
   --color: #4af;
   opacity: 0.8;
