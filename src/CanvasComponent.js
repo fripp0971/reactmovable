@@ -1,16 +1,9 @@
-import React, {
-  useState,
-  useEffect,
-  Fragment,
-  useRef,
-  useLayoutEffect,
-} from "react";
+import React, { Fragment, useRef } from "react";
 import DragDropComponent from "./DragDropComponent";
 import TextFieldHelper from "./TextFieldHelper";
 
 const CanvasComponent = (props) => {
   const canvas = useRef(null);
-  const [inputs, setInputs] = React.useState([]);
 
   const [docImageDimensions, setDocImageDimensions] = React.useState({
     left: 0,
@@ -25,29 +18,15 @@ const CanvasComponent = (props) => {
     props.inputValueChanged(e);
   };
 
-  useEffect(() => {
-    //console.log("mode", props.mode);
-    //console.log("template", props.template);
-    let template = props.template;
-    for (let i = 0; i < template.length; i++) {
-      let element = template[i];
+  const renderInputs = (input) => {
+    let control = TextFieldHelper.createTextInput(
+      input,
+      props.mode,
+      inputValueChanged
+    );
 
-      let input = TextFieldHelper.createTextInput(
-        element,
-        props.mode,
-        inputValueChanged
-      );
-
-      if (element.add) {
-        props.setTarget(input);
-      }
-
-      //console.log("input", input);
-      canvas.current.append(input);
-
-      props.setSelectableInputs((prev) => [...prev, input]);
-    }
-  }, [props.mode, props.template]);
+    return control;
+  };
 
   const imageLoaded = () => {
     let docImage = document.getElementById("docImage");
@@ -62,16 +41,19 @@ const CanvasComponent = (props) => {
 
   return (
     <Fragment>
+      <DragDropComponent
+        template={props.template}
+        bounds={docImageDimensions}
+        setPositionAttributes={props.setPositionAttributes}
+        dragContainer={document.getElementById(".formCanvas")}
+      />
       <div
         ref={canvas}
-        style={{ position: "abo", top: 0, left: 0 }}
+        style={{ position: "relative", top: 0, left: 0 }}
         id="formCanvas"
       >
         <img
           onLoad={imageLoaded}
-          onClick={() => {
-            props.setTarget(null);
-          }}
           id="docImage"
           alt=""
           style={{
@@ -84,6 +66,7 @@ const CanvasComponent = (props) => {
           }}
           src="Notice.png"
         />
+        {props.template.map((input) => renderInputs(input))}
       </div>
     </Fragment>
   );

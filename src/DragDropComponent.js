@@ -1,22 +1,25 @@
 import Selecto from "react-selecto";
 import Moveable from "react-moveable";
-
 import React, { useState, useEffect, Fragment, useRef } from "react";
 
 const DragDropComponent = (props) => {
   const [frameMap] = useState(() => new Map());
   const moveableRef = useRef(null);
+  const [target, setTarget] = useState([]);
+  const [selectables, setSelectables] = useState();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    setSelectables(document.querySelectorAll(".input-field"));
+  }, [props.template]);
 
   return (
     <Fragment>
       <Moveable
         ref={moveableRef}
-        target={props.target}
+        target={target}
         origin={false}
         renderDirections={["n", "w", "e", "s"]}
-        elementGuidelines={props.selectableInputs}
+        elementGuidelines={selectables}
         bounds={props.docImageDimensions}
         edge
         draggable
@@ -66,7 +69,6 @@ const DragDropComponent = (props) => {
         }}
         onResizeEnd={({ target }) => {
           props.setPositionAttributes(target);
-          //props.setTarget(target);
         }}
         snappable
         snapThreshold={5}
@@ -80,19 +82,30 @@ const DragDropComponent = (props) => {
       />
       <Selecto
         dragContainer={props.dragContainer}
-        selectableTargets={props.selectableInputs}
+        selectableTargets={selectables}
         selectByClick
         selectFromInside={false}
-        onSelect={(e) => {}}
+        onDragStart={(e) => {
+          const moveable = moveableRef.current;
+          const temp = e.inputEvent.target;
+          if (
+            moveable.isMoveableElement(temp) ||
+            target.some((t) => t === temp || t.contains(temp))
+          ) {
+            e.stop();
+          }
+        }}
+        onSelect={(e) => {
+          setTarget(e.selected);
+        }}
         onSelectEnd={(e) => {
-          if (e.selected.length > 0) {
-            props.setTarget(e.selected);
+          const moveable = moveableRef.current;
+          if (e.isDragStart) {
+            e.inputEvent.preventDefault();
 
-            props.setPositionAttributes(e.selected[0]);
-          } else {
-            if (!Array.isArray(props.target)) {
-              props.setPositionAttributes(props.target);
-            }
+            setTimeout(() => {
+              moveable.dragStart(e.inputEvent);
+            });
           }
         }}
       ></Selecto>

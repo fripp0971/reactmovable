@@ -1,20 +1,9 @@
 import React, { useState, useEffect } from "react";
 import CanvasComponent from "./CanvasComponent";
-import DragDropComponent from "./DragDropComponent";
-//import TextFieldComponent from "./TextFieldComponent";
 
 export default function App() {
   const [template, setTemplate] = useState([]);
-
-  const [target, setTarget] = useState();
-  const [selectableInputs, setSelectableInputs] = React.useState([]);
   const [mode, setMode] = React.useState("design");
-  const [docImageDimensions, setDocImageDimensions] = React.useState({
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-  });
 
   const setPositionAttributes = (target) => {
     if (target) {
@@ -25,7 +14,7 @@ export default function App() {
       let width = targetDimensions.width;
       let height = targetDimensions.height;
 
-      let element = template[target.dataset.index];
+      let element = template.find((x) => x.id === target.dataset.id);
 
       if (element) {
         console.log("found it");
@@ -48,14 +37,6 @@ export default function App() {
     console.log(output);
   };
 
-  const removeAllInputs = () => {
-    let inputs = document.getElementsByClassName("input-field");
-    while (inputs.length > 0) inputs[0].remove();
-
-    inputs = document.getElementsByClassName("populate");
-    while (inputs.length > 0) inputs[0].remove();
-  };
-
   const generateGuid = () => {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
       c
@@ -68,9 +49,6 @@ export default function App() {
 
   const addElement = (type) => {
     setMode("design");
-
-    setSelectableInputs([]);
-    removeAllInputs();
 
     //build template here
     let element = {
@@ -88,14 +66,10 @@ export default function App() {
   };
 
   const populateForm = () => {
-    setSelectableInputs([]);
-    removeAllInputs();
     setMode("populate");
   };
 
   const showText = () => {
-    setSelectableInputs([]);
-    removeAllInputs();
     setMode("view");
   };
 
@@ -104,6 +78,7 @@ export default function App() {
     if (element != null) {
       element.value = e.target.value;
       setTemplate(template);
+      displayTemplate();
     }
   };
 
@@ -136,16 +111,6 @@ export default function App() {
 
   return (
     <div style={{ padding: "0px" }}>
-      {mode === "design" && (
-        <DragDropComponent
-          target={target}
-          selectableInputs={selectableInputs}
-          bounds={docImageDimensions}
-          setPositionAttributes={setPositionAttributes}
-          setTarget={setTarget}
-          dragContainer={document.getElementById(".formCanvas")}
-        />
-      )}
       <div style={{ border: "1px solid blue" }}>
         <button onClick={addElement}>Add</button>&nbsp;
         <button onClick={populateForm}>Populate</button>
@@ -155,10 +120,8 @@ export default function App() {
         mode={mode}
         template={template}
         setTemplate={setTemplate}
-        setTarget={setTarget}
         inputValueChanged={inputValueChanged}
-        setSelectableInputs={setSelectableInputs}
-        setDocImageDimensions={setDocImageDimensions}
+        setPositionAttributes={setPositionAttributes}
       ></CanvasComponent>
     </div>
   );
